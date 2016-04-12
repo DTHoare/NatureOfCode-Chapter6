@@ -20,11 +20,12 @@ class FlowField {
         for (int j = 0; j < rows; j++) {
           //create noise
           //if you use 0 to 2PI it averages PI ?
-          float theta = map(noise(xoff,yoff),0,1,0,8*PI);
+          float theta = stretch(noise(xoff,yoff), 5);
+          theta = map(theta,0,1,0,2*PI);
           field[i][j] = new PVector(cos(theta),sin(theta));
-          yoff += 0.1;
+          yoff += 0.05;
         }
-      xoff += 0.1;
+      xoff += 0.05;
       }
     }
     
@@ -36,4 +37,12 @@ class FlowField {
     return field[column][row].copy();
   }
  
+}
+
+//idea by Paolo Ceric
+float stretch(float p, float g){
+  if (p < 0.5) 
+    return 0.5 * pow(2*p, g);
+  else
+    return 1 - 0.5 * pow(2*(1 - p), g);
 }

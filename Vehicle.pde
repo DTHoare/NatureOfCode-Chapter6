@@ -50,7 +50,7 @@ class Vehicle{
     desired.normalize();
     
     //slow down as you get closer
-    if (d < 100) {
+    if (d < 5*maxSpeed) {
       float m = map(d,0,100,0,maxSpeed);
       desired.mult(m);
     } else {
@@ -89,5 +89,38 @@ class Vehicle{
     PVector steer = PVector.sub(desired,velocity);
     steer.limit(maxForce*strength);
     applyForce(steer);
+  }
+  
+  void  followPath(Path path) {
+    PVector predict = velocity.copy();
+    predict.normalize();
+    predict.mult(3*maxSpeed);
+    predict.add(position);
+    
+    //get normal point ahead on path based on predicted location
+    PVector normalPoint = getNormalPoint(predict, path.start, path.end);
+    
+    //seek further along if on path
+    if(PVector.dist(predict, normalPoint) < path.radius) {
+      //target is ahead of normal point
+      PVector target = PVector.sub(path.end,path.start).normalize().mult(6*maxSpeed).add(normalPoint);
+      seek(target);
+    } else {
+      //target is ahead of normal point
+      PVector target = PVector.sub(path.end,path.start).normalize().mult(3*maxSpeed).add(normalPoint);
+      seek(target);
+    }
+    
+  }
+  
+  PVector getNormalPoint(PVector pos, PVector a, PVector b) {
+    PVector ap = PVector.sub(pos,a);
+    PVector ab = PVector.sub(b,a);
+    
+    ab.normalize();
+    ab.mult(ap.dot(ab));
+    PVector normalPoint = PVector.add(a, ab);
+    
+    return(normalPoint);
   }
 }
