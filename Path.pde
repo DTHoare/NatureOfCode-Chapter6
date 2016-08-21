@@ -1,23 +1,46 @@
 class Path {
-  PVector start;
-  PVector end;
-  
+  ArrayList<PVector> points;
   float radius;
   
+  /* -----------------------------------------------------------------------------
+  Init
+  ----------------------------------------------------------------------------- */
   Path() {
     radius = 20;
-    start = new PVector(0,height/3);
-    end = new PVector(width,2*height/3);
+    points = new ArrayList<PVector>();
   }
   
+  /* -----------------------------------------------------------------------------
+  addPoint
+  allows a point to be added using coordinates seperately or as a vector
+  ----------------------------------------------------------------------------- */
+  void addPoint(float x, float y){
+    PVector point = new PVector(x,y);
+    points.add(point);
+  }
+  
+  void addPoint(PVector vec) {
+    points.add(vec.copy());
+  }
+  
+  /* -----------------------------------------------------------------------------
+  display
+  Debugging function draws the path to screen
+  ----------------------------------------------------------------------------- */
   void display() {
     //path boundary
     strokeWeight(radius*2);
     stroke(0,100);
-    line(start.x,start.y,end.x,end.y);
+   for (PVector v : points){
+     vertex(v.x, v.y);
+   }
+   endShape();
     //centre line
     strokeWeight(1);
     stroke(0);
-    line(start.x,start.y,end.x,end.y);
+    for (PVector v : points){
+     vertex(v.x, v.y);
+   }
+   endShape();
   }
 }
